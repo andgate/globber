@@ -9,7 +9,7 @@ license:             BSD3
 license-file:        LICENSE
 author:              Gabriel Anderson
 maintainer:          ganderson@go.shoreline.edu
--- copyright:
+copyright:           Copyight (C) 2015 Gabriel Anderson
 category:            Text
 build-type:          Simple
 -- extra-source-files:
@@ -17,7 +17,7 @@ cabal-version:       >=1.10
 
 source-repository     head
   type:               git
-  location:           git@github.com:andgate/globber.git
+  location:           https://www.github.com:andgate/globber.git
 
 library
   -- exposed-modules:
