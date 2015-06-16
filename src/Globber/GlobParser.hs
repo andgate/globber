@@ -1,13 +1,20 @@
 module Globber.GlobParser where
 
 import Text.ParserCombinators.Parsec
+import Text.Parsec.Combinator
 import Globber.Glob
 
-parseGlob :: String -> Glob
+parseGlob :: String -> GlobPattern
 parseGlob s =
   case parse globPattern "Glob Parser" s of
     Left e -> error . show $ e
     Right g -> g
+
+globEscape :: Parser Glob
+globEscape = do
+  char '\\'
+  c <- anyChar
+  return . GlobLiteral $ c
 
 globLiteral :: Parser Glob
 globLiteral = do
@@ -26,25 +33,25 @@ globAnyString = do
 
 globRange :: Parser Glob
 globRange = do
-  s <- between (char '[') (char ']') (many $ fromToParser <|> anyCharS)
-  return . GlobRange . unlines $ s
+  char '['
+  s <- manyTill anyChar (try $ char ']')
+  return . GlobRange $ s
 
-anyCharS :: Parser String
-anyCharS = do
-  c <- anyChar
-  return [c]
-
-fromToParser :: Parser String
-fromToParser = do
+globRangeFromTo :: Parser Glob
+globRangeFromTo = do
+  char '['
   a <- anyChar
   char '-'
   b <- anyChar
-  return [a .. b]
+  char ']'
+  return . GlobRange $ [a .. b]
 
-globPattern :: Parser Glob
+globPattern :: Parser GlobPattern
 globPattern = do
-  g <- many $ globLiteral
+  g <- many $ globEscape
         <|> globAnyChar
         <|> globAnyString
+        <|> try globRangeFromTo
         <|> globRange
+        <|> globLiteral
   return . GlobPattern $ g

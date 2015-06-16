@@ -11,19 +11,23 @@ import Globber.Glob
 -- >>> matchGlob "a[b-z]c" "adc"
 -- True
 --
--- >>> matchGlob "a?c" "adc"
--- True
--- >>> matchGlob "/usr/*/stuff" "usr/glob/stuff"
+-- >>> matchGlob "a[abcd]c" "abc"
 -- True
 --
--- >>> matchGlob "/usr/*/stuff" "usr/stuff"
+-- >>> matchGlob "a[xyz]c" "abc"
 -- False
 --
--- >>> matchGlob "\a\b\c\d\e\[]" "abcde\[]"
+-- >>> matchGlob "a?c" "adc"
+-- True
+--
+-- >>> matchGlob "/usr/*/stuff" "/usr/glob/stuff"
+-- True
+--
+-- >>> matchGlob "/usr/*/stuff" "/usr/stuff"
+-- False
+--
+-- >>> matchGlob "\\a\\b\\c\\d\\e\\[]" "abcde[]"
 -- True
 matchGlob :: String -> String -> Bool
 matchGlob glob input =
-  checkGlob (parserGlob glob) input
-
-
-checkGlob
+  compareToGlob input . parseGlob $ glob
