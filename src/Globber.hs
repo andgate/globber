@@ -32,7 +32,7 @@ import Globber.Glob
 -- >>> matchGlob "da?id*[1-9]" "davidcool3"
 -- True
 --
--- >>> matchGlob "da?id*[1-9]" "davidz"
+-- >>> matchGlob "da?id*[1-9]" "davidcool"
 -- False
 matchGlob :: String -> String -> Bool
 matchGlob glob input =
