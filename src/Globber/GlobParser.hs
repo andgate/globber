@@ -54,4 +54,4 @@ globPattern = do
         <|> try globRangeFromTo
         <|> globRange
         <|> globLiteral
-  return . GlobPattern $ g
+  return g

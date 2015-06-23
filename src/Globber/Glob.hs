@@ -3,8 +3,7 @@ module Globber.Glob where
 import Data.Char
 import Data.List
 
-data GlobPattern = GlobPattern [Glob]
-  deriving(Show)
+type GlobPattern = [Glob]
 
 data Glob =
     GlobLiteral Char
@@ -14,28 +13,30 @@ data Glob =
     deriving(Show, Eq)
 
 compareToGlob :: String -> GlobPattern -> Bool
-compareToGlob _ (GlobPattern []) = False
-compareToGlob s (GlobPattern gs) = snd $ foldl' (\(s, a) g -> let (s', b) = match s g in (s', a && b)) (s, True) gs
+compareToGlob _ [] = False
+compareToGlob s gs = match s gs
 
 
-match :: String -> Glob -> (String, Bool)
+match :: String -> GlobPattern -> Bool
 
-match [] (GlobLiteral _) =
-  ([], False)
-match (a:s) (GlobLiteral c) =
-  (s, a == c)
+match [] (GlobLiteral _ :_) = False
+match (a:s) (GlobLiteral c : gs) =
+  a == c && match s gs
 
-match [] (GlobAnyChar) =
-  ([], False)
-match (_:s) (GlobAnyChar) =
-  (s, True)
+match [] (GlobAnyChar : _) =
+  False
+match (_:s) (GlobAnyChar:gs) =
+  match s gs
 
-match [] (GlobAnyString) =
-  ([], True)
-match s (GlobAnyString) =
-  (dropWhile (`notElem` "\\/") s, True)
+match [] (GlobAnyString:gs) =
+  True && match [] gs
+match (_:s) g@(GlobAnyString:gs) =
+  match s gs || match s g
 
-match [] (GlobRange _)
-  = ([], False)
-match (c:s) (GlobRange r) =
-  (s, c `elem` r)
+match [] (GlobRange _ : _) =
+  False
+match (c:s) (GlobRange r : gs) =
+  c `elem` r && match s gs
+
+match [] [] = True
+match (_ : _) [] = False

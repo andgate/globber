@@ -28,6 +28,12 @@ import Globber.Glob
 --
 -- >>> matchGlob "\\a\\b\\c\\d\\e\\[]" "abcde[]"
 -- True
+--
+-- >>> matchGlob "da?id*[1-9]" "davidcool3"
+-- True
+--
+-- >>> matchGlob "da?id*[1-9]" "davidz"
+-- False
 matchGlob :: String -> String -> Bool
 matchGlob glob input =
   compareToGlob input . parseGlob $ glob
