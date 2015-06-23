@@ -12,11 +12,6 @@ data Glob =
     | GlobRange String
     deriving(Show, Eq)
 
-compareToGlob :: String -> GlobPattern -> Bool
-compareToGlob _ [] = False
-compareToGlob s gs = match s gs
-
-
 match :: String -> GlobPattern -> Bool
 
 match [] (GlobLiteral _ :_) = False

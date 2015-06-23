@@ -1,4 +1,4 @@
-module Globber where
+module Globber (matchGlob) where
 
 import Globber.GlobParser
 import Globber.Glob
@@ -36,4 +36,4 @@ import Globber.Glob
 -- False
 matchGlob :: String -> String -> Bool
 matchGlob glob input =
-  compareToGlob input . parseGlob $ glob
+  match input . parseGlob $ glob
